@@ -30,10 +30,10 @@ svg:
   optimize: true
 # Build settings
 # theme: minima
-highlighter-theme: monokai
+highlighter-theme: Tank-Theme
 date_format: "%Y-%M-%D"
 plugins:
-  - jekyll-feed
+  - Tank-feed
 category_dir: category/
 tag_dir: tag/
 
