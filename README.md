@@ -10,7 +10,6 @@ permalink: /about/
 ### Skills
 - Network
 - Penetration test
-- Most optimiz
 - Software reverse
 - C programming development
 
