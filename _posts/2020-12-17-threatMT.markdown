@@ -1,13 +1,80 @@
 ---
 layout: post
-title:  "AFL改进方法"
-date:   2020-12-16 19:31:29 +0900
+title:  "Threat Modeling Tool威胁建模"
+date:   2020-12-17 10:18:29 +0900
 ---
-AFL针对含有源码的漏洞挖掘测试
-😁🤣
-{% highlight ruby %}
-./configure CC="afl-gcc" CXX="afl-g++"//指定编译选项
-make clean //清除编译记录
-make -j4 //进行编译
-{% endhighlight %}
+以SDL威胁建模方法的现有知识为基础，在不同的业务组件通信中分析安全威胁
 
+# 整体的安全数据流图
+![alt text](/public/img/TMT-1.png)
+不同的业务组件构建不同的业务流
+# 1、数据流安全分析
+![alt text](/public/img/TMT-2.png)
+1.泄露的访问密钥可能会使对手具有对Cosmos数据库实例的超出预期的访问权限  [状态：未启动] [优先级：高] 
+类别：	特权提升
+描述：	泄露的访问密钥可能允许攻击者拥有对Cosmos数据库实例的过度特权的访问
+理由：	<未提供缓解措施>
+可能的缓解措施：	尽可能使用资源（类似于SAS）令牌（使用主密钥派生）来连接到Cosmos数据库实例。限定资源令牌的范围以仅允许必要的特权（例如，只读）。将机密存储在机密存储解决方案中（例如Key Vault）。请参阅：＆amp; lt; a href =＆amp; quot; https：//aka.ms/tmt-th54& quot; https：//aka.ms/tmt-th54& lt ; / a＆amp; gt;
+SDL阶段：	设计
+2.由于网络安全配置较弱，对手可以未经授权访问Azure Cosmos数据库实例  [状态：未启动] [优先级：高] 
+类别：	特权提升
+描述：	由于网络安全配置较弱，对手可能获得对Azure Cosmos数据库实例的未经授权的访问
+理由：	<未提供缓解措施>
+可能的缓解措施：	通过将帐户级防火墙规则配置为仅允许来自所选IP地址的连接，来限制对Cosmos数据库实例的访问。请参阅：<a href="https://aka.ms/tmt-th57"> https://aka.ms/tmt-th57 </a>
+SDL阶段：	实作
+3.有权访问Cosmos DB的对手可以读取敏感的明文数据  [状态：未启动] [优先级：高] 
+类别：	信息披露
+描述：	有权访问Cosmos DB的对手可以读取敏感的明文数据
+理由：	<未提供缓解措施>
+可能的缓解措施：	在将敏感数据存储到Azure Document DB中之前，先对其进行加密。
+SDL阶段：	设计
+4.攻击者可以重用被盗的长期使用的资源令牌，访问密钥或连接字符串来访问Cosmos数据库实例  [状态：未启动] [优先级：高] 
+类别：	特权提升
+描述：	对手可能会重用被盗的长期资源令牌，访问密钥或连接字符串来访问Cosmos数据库实例
+理由：	<未提供缓解措施>
+可能的缓解措施：	为生成的资源令牌使用最小令牌生存期。根据组织的策略，经常轮换机密（例如，连接令牌中的资源令牌，访问密钥和密码）。请参阅：<a href="https://aka.ms/tmt-th55"> https://aka.ms/tmt-th55 </a>
+SDL阶段：	实作
+# 2、数据流安全分析
+![alt text](/public/img/TMT-3.png)
+5.攻击者可能在IoT设备上执行未知代码  [状态：未启动] [优先级：高] 
+类别：	篡改
+描述：	攻击者可能将恶意代码启动到IoT设备中并执行
+理由：	<未提供缓解措施>
+可能的缓解措施：	确保未知代码无法在设备上执行。请参阅：<a href="https://aka.ms/tmtconfigmgmt#unknown-exe"> https://aka.ms/tmtconfigmgmt#unknown-exe </a>
+SDL阶段：	设计
+6.攻击者可能会未经授权访问IoT设备上的特权功能  [状态：未启动] [优先级：高] 
+类别：	特权提升
+描述：	攻击者可以在设备上访问管理界面或特权服务，例如WiFi，SSH，文件共享，FTP等
+理由：	<未提供缓解措施>
+可能的缓解措施：	确保使用强凭据保护所有管理界面。请参阅：<a href="https://aka.ms/tmtconfigmgmt#admin-strong"> https://aka.ms/tmtconfigmgmt#admin-strong </a>
+SDL阶段：	实作
+7.对手可能会利用Dynamics CRM Outlook Client中未使用的服务或功能  [状态：未启动] [优先级：高] 
+类别：	特权提升
+描述：	攻击者可以在Dynamics CRM Outlook客户端上使用未使用的功能或服务，例如UI，USB端口等。未使用的功能会增加攻击面，并充当攻击者的其他入口点
+理由：	<未提供缓解措施>
+可能的缓解措施：	确保仅在设备上启用最少的服务/功能。请参阅：<a href="https://aka.ms/tmtconfigmgmt#min-enable"> https://aka.ms/tmtconfigmgmt#min-enable </a>
+SDL阶段：	实作
+8.如果带有Dynamics CRM Outlook客户端和脱机数据的笔记本电脑丢失，并且设备不安全，则可能会泄露数据。   [状态：未启动] [优先级：高] 
+类别：	信息披露
+描述：	如果带有Dynamics CRM Outlook客户端和脱机数据的笔记本电脑丢失，则在设备不安全的情况下可能会泄露数据
+理由：	<未提供缓解措施>
+可能的缓解措施：	确保已建立需要PIN /密码/自动锁定并加密所有数据的设备管理策略（例如Bitlocker）。请参阅：<a href="https://aka.ms/tmtcrypto#bitlocker"> https://aka.ms/tmtcrypto#bitlocker </a>
+SDL阶段：	设计
+9.对手可能利用未打补丁的设备中的已知漏洞  [状态：未启动] [优先级：高] 
+类别：	篡改
+描述：	如果设备的固件未更新，则攻击者可能利用已知漏洞并利用设备
+理由：	<未提供缓解措施>
+可能的缓解措施：	确保Cloud Gateway实施了使连接的设备固件保持最新的过程。请参阅：<a href="https://aka.ms/tmtconfigmgmt#cloud-firmware"> https://aka.ms/tmtconfigmgmt#cloud-firmware </a>
+SDL阶段：	设计
+10.对手可能会篡改IoT设备并从中提取加密密钥材料  [状态：未启动] [优先级：高] 
+类别：	篡改
+描述：	攻击者可以部分或全部替换运行在Dynamics CRM Outlook客户端上的软件，如果该非法程序可以使用密钥材料或持有密钥材料的加密工具，则可能允许替换的软件利用设备的真实身份。例如，攻击者可能利用提取的密钥材料来拦截和抑制来自通信路径上设备的数据，并将其替换为通过窃取的密钥材料进行身份验证的虚假数据。
+理由：	<未提供缓解措施>
+可能的缓解措施：	将加密密钥安全地存储在IoT设备上。请参阅：<a href="https://aka.ms/tmtcrypto#keys-iot"> https://aka.ms/tmtcrypto#keys-iot </a>
+SDL阶段：	设计
+11.攻击者可能篡改设备的操作系统并发起离线攻击  [状态：未启动] [优先级：高] 
+类别：	篡改
+描述：	攻击者可能会通过禁用或规避已安装的操作系统来发起脱机攻击，或者通过物理上将存储介质与设备分开来进行脱机攻击，以便分别攻击数据。
+理由：	<未提供缓解措施>
+可能的缓解措施：	使用Bitlocker加密OS和IoT设备的其他分区。请参阅：<a href="https://aka.ms/tmtconfigmgmt#partition-iot"> https://aka.ms/tmtconfigmgmt#partition-iot </a>
+SDL阶段：	设计
