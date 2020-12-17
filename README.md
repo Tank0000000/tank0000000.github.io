@@ -5,7 +5,7 @@ permalink: /about/
 ---
 
 ## Tank
-> a Security researchers
+> a security researcher
 
 ### Skills
 - Network
