@@ -14,5 +14,4 @@ permalink: /about/
 - C programming development
 
 ### picture
-#### Page
 ![alt text](/public/img/tank-carton.jpg)
