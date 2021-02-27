@@ -8,10 +8,10 @@ permalink: /about/
 > a security researcher
 
 ### Skills
-- Network
+- Security Researcher
 - Penetration test
 - Software reverse
-- C programming development
+- C/Python programming development
 
 ### picture
 ![alt text](/public/img/tank-carton.jpg)
